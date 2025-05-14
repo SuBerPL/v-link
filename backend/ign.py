@@ -50,7 +50,7 @@ class IGNThread(threading.Thread):
                 
                 # Check if the state has changed
                 if current_state != previous_state:
-                    if current_state == 1: # Pin is raised high when Ignition is turned off.
+                    if current_state == 0: # Pin is raised high when Ignition is turned off.
                         shared_state.ign_state.clear()  # Ignition is OFF, so clear the state
                     else:
                         shared_state.ign_state.set()  # Ignition is ON, so set the state                    
