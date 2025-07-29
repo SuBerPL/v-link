@@ -52,7 +52,7 @@ const DEFAULT_BINDINGS = {
   play: 'KeyP',
   pause: 'KeyS',
   next: 'KeyN',
-  prev: 'KeyV'
+  prev: 'KeyV',
   acceptPhone: 'KeyA',
   rejectPhone: 'KeyR'
 }
