@@ -53,6 +53,8 @@ const DEFAULT_BINDINGS = {
   pause: 'KeyS',
   next: 'KeyN',
   prev: 'KeyV'
+  acceptPhone: 'KeyA',
+  rejectPhone: 'KeyR'
 }
 
 const EXTRA_CONFIG = {
