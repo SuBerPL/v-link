@@ -27,6 +27,8 @@ export interface KeyBindings {
   'pause': string,
   'next': string,
   'prev': string
+  'acceptPhone': string,
+  'rejectPhone': string
 }
 
 export interface CanMessage {
