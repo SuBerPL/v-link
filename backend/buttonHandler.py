@@ -47,6 +47,8 @@ class ButtonHandler:
             uinput.KEY_DOWN,
             uinput.KEY_LEFT,
             uinput.KEY_RIGHT
+            uinput.KEY_A,
+            uinput.KEY_R
         ])
 
     def handle(self, button_name):
