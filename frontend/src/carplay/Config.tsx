@@ -26,7 +26,9 @@ export interface KeyBindings {
   'play': string,
   'pause': string,
   'next': string,
-  'prev': string
+  'prev': string,
+  'acceptPhone': string,
+  'rejectPhone': string
 }
 
 export interface CanMessage {
@@ -38,4 +40,5 @@ export interface CanMessage {
 export interface CanConfig {
   reverse?: CanMessage,
   lights?: CanMessage
+
 }
