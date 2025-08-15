@@ -315,12 +315,12 @@
     "acceptPhone": {
       "type": "lin",
       "value": "KeyA",
-      "label": "AcceptPhone"
+      "label": "Accept Phone"
     },
     "rejectPhone": {
       "type": "lin",
       "value": "KeyR",
-      "label": "RejectPhone"
+      "label": "Reject Phone"
     }
   },
 
@@ -389,3 +389,4 @@
   }
 
 }
+
