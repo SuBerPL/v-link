@@ -311,6 +311,16 @@
       "type": "lin",
       "value": "KeyV",
       "label": "Previous"
+    },
+    "acceptPhone": {
+      "type": "lin",
+      "value": "KeyA",
+      "label": "AcceptPhone"
+    },
+    "rejectPhone": {
+      "type": "lin",
+      "value": "KeyR",
+      "label": "RejectPhone"
     }
   },
 
@@ -377,4 +387,5 @@
       "label": "Show Advanced Settings"
     }
   }
+
 }
