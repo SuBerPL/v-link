@@ -15,7 +15,9 @@
         "play": "KeyP",
         "pause": "KeyO",
         "next": "KeyN",
-        "prev": "KeyV"
+        "prev": "KeyV",
+        "acceptPhone": "KeyA",
+        "rejectPhone": "KeyR"
       },
     "boxName": "nodePlay",
     "dpi": 160,
