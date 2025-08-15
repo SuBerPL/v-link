@@ -46,7 +46,9 @@ class ButtonHandler:
             uinput.KEY_UP,
             uinput.KEY_DOWN,
             uinput.KEY_LEFT,
-            uinput.KEY_RIGHT
+            uinput.KEY_RIGHT,
+            uinput.KEY_A,
+            uinput.KEY_R
         ])
 
     def handle(self, button_name):
@@ -106,6 +108,12 @@ class ButtonHandler:
                 print('Volume up')
             case "BTN_VOL_DOWN":
                 print('Volume down')
+            case "BTN_YES":
+                print('Accept Call')
+                self.input_device.emit_click(uinput.KEY_A, 1)
+            case "BTN_NO":
+                print('Reject Call')
+                self.input_device.emit_click(uinput.KEY_R, 1)
         
     def _trigger_long_press_action(self, button_name):
         """Perform a long press action."""
