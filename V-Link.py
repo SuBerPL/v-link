@@ -292,14 +292,15 @@ class VLINK:
                 else ('vcgencmd display_power 1', 'vcgencmd display_power 0')
             )
 
-            if  not shared_state.hdmiStatus:
-                logger.info('[V-Link] Toggle HDMI Off')
-                os.system(hdmi_off)
-            else:
+            if shared_state.hdmiStatus:
                 logger.info('[V-Link] Toggle HDMI On')
                 os.system(hdmi_on)
+            else:
+                logger.info('[V-Link] Toggle HDMI Off')
+                os.system(hdmi_off)
 
-            shared_state.hdmiStatus = not shared_state.hdmiStatus
+            # do not invert state here, callers set state instead.
+            # shared_state.hdmiStatus = not shared_state.hdmiStatus
 
 
     def process_update_event(self):
