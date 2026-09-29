@@ -16,7 +16,7 @@ from .media                 import media_api
 from .shared.shared_state   import shared_state
 from updater.releases       import UpdateError, commit_sha, get_release, installed_release, list_releases
 
-from .threads.cam         import CAMThread
+from .threads.cam         import CAMThread, CameraGPIO
 
 
 import logging
@@ -214,7 +214,7 @@ class ServerThread(threading.Thread):
             if module == "rearcam":
                 try:
                     if rearcam["drv"] is None:
-                        rearcam["drv"] = CameraGPIO(line=26, chip=0, active_high=True, logger=logger)
+                        rearcam["drv"] = CameraGPIO(line=26, active_high=True, logger=logger)
                     on = rearcam["drv"].toggle()
                     socketio.emit('state', on, namespace=namespace)
                     socketio.emit('camera/status', {'on': on}, namespace=namespace)
@@ -271,7 +271,7 @@ class ServerThread(threading.Thread):
             def rearcam_mount(_payload=None):
                 try:
                     if rearcam["drv"] is None:
-                        rearcam["drv"] = CameraGPIO(line=26, chip=0, active_high=True, logger=logger)
+                        rearcam["drv"] = CameraGPIO(line=26, active_high=True, logger=logger)
                     rearcam["drv"].set(True)
                     on = rearcam["drv"].get()
                     socketio.emit('state', on, namespace=namespace)
@@ -284,7 +284,7 @@ class ServerThread(threading.Thread):
             def rearcam_unmount(_payload=None):
                 try:
                     if rearcam["drv"] is None:
-                        rearcam["drv"] = CameraGPIO(line=26, chip=0, active_high=True, logger=logger)
+                        rearcam["drv"] = CameraGPIO(line=26, active_high=True, logger=logger)
                     rearcam["drv"].set(False)
                     on = rearcam["drv"].get()
                     socketio.emit('state', on, namespace=namespace)
@@ -297,7 +297,7 @@ class ServerThread(threading.Thread):
             def rearcam_status(_payload=None):
                 try:
                     if rearcam["drv"] is None:
-                        rearcam["drv"] = CameraGPIO(line=26, chip=0, active_high=True, logger=logger)
+                        rearcam["drv"] = CameraGPIO(line=26, active_high=True, logger=logger)
                     on = bool(rearcam["drv"].get())
                     socketio.emit('camera/status', {'on': on}, namespace=namespace)
                 except Exception as e:

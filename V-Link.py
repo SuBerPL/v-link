@@ -180,14 +180,22 @@ class VLINK:
                 return
 
         thread_class = self.threads[thread_name]
-        thread = thread_class(logger=logger) # instantiate thread
-        thread.daemon = True
-        thread.start()
+        try:
+            thread = thread_class(logger=logger) # instantiate thread
+            thread.daemon = True
+            thread.start()
+        except Exception as error:
+            shared_state.THREADS[thread_name] = None
+            logger.exception(
+                f'[V-Link] Could not initialize "{thread_name}" thread; '
+                f'the module will remain disabled: {error}'
+            )
+            return
 
         shared_state.THREADS[thread_name] = thread
-
         time.sleep(.05)
         if not thread.is_alive():
+            shared_state.THREADS[thread_name] = None
             logger.error(f'[V-Link] "{thread_name}" failed to start.')
         else:
             logger.info(f'[V-Link] {thread_name}-thread started.')
