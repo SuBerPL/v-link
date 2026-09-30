@@ -180,14 +180,22 @@ class VLINK:
                 return
 
         thread_class = self.threads[thread_name]
-        thread = thread_class(logger=logger) # instantiate thread
-        thread.daemon = True
-        thread.start()
+        try:
+            thread = thread_class(logger=logger) # instantiate thread
+            thread.daemon = True
+            thread.start()
+        except Exception as error:
+            shared_state.THREADS[thread_name] = None
+            logger.exception(
+                f'[V-Link] Could not initialize "{thread_name}" thread; '
+                f'the module will remain disabled: {error}'
+            )
+            return
 
         shared_state.THREADS[thread_name] = thread
-
         time.sleep(.05)
         if not thread.is_alive():
+            shared_state.THREADS[thread_name] = None
             logger.error(f'[V-Link] "{thread_name}" failed to start.')
         else:
             logger.info(f'[V-Link] {thread_name}-thread started.')
@@ -292,14 +300,15 @@ class VLINK:
                 else ('vcgencmd display_power 1', 'vcgencmd display_power 0')
             )
 
-            if  not shared_state.hdmiStatus:
-                logger.info('[V-Link] Toggle HDMI Off')
-                os.system(hdmi_off)
-            else:
+            if shared_state.hdmiStatus:
                 logger.info('[V-Link] Toggle HDMI On')
                 os.system(hdmi_on)
+            else:
+                logger.info('[V-Link] Toggle HDMI Off')
+                os.system(hdmi_off)
 
-            shared_state.hdmiStatus = not shared_state.hdmiStatus
+            # do not invert state here, callers set state instead.
+            # shared_state.hdmiStatus = not shared_state.hdmiStatus
 
 
     def process_update_event(self):
