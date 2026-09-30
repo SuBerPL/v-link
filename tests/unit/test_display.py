@@ -136,6 +136,23 @@ def test_full_restart_reexecutes_after_browser_hardware_and_server_shutdown(monk
     assert not restart_event.is_set()
 
 
+def test_thread_constructor_failure_does_not_crash_application(monkeypatch):
+    class BrokenThread:
+        def __init__(self, logger):
+            del logger
+            raise RuntimeError('hardware unavailable')
+
+    logger = MagicMock()
+    monkeypatch.setattr(_vmod, 'logger', logger)
+    instance = _vmod.VLINK()
+    instance.threads['cam'] = BrokenThread
+
+    instance.start_thread('cam', logger)
+
+    assert _vmod.shared_state.THREADS['cam'] is None
+    logger.exception.assert_called_once()
+
+
 class TestBacklightCanData:
     def test_reads_nested_sensor_data(self):
         from backend.shared.backlight_helper import BacklightController
