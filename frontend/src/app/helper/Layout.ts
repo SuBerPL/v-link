@@ -43,6 +43,9 @@ const STANDARD_PROJECTION_SIZES: ViewportSize[] = [
   { width: 3840, height: 2160 },
 ];
 
+const STANDARD_ANDROID_AUTO_DENSITIES = [120, 160, 213, 240, 320, 480, 640];
+export const DEFAULT_PROJECTION_DPI = 160;
+
 export const MIN_CARPLAY_SIZE: ViewportSize = { width: 1280, height: 720 };
 
 /**
@@ -118,3 +121,30 @@ export const carplayRequestSize = (viewport: ViewportSize): ViewportSize =>
  */
 export const androidAutoRequestSize = (viewport: ViewportSize): ViewportSize =>
   standardizedProjectionSize(viewport);
+
+/**
+ * Keep Android Auto controls readable when a standard projection is rendered
+ * onto a much smaller compact display. Android Auto composes its UI at the
+ * advertised density before V-Link downscales the video, so compensate for
+ * that local scale and select the nearest standard Android density bucket.
+ */
+export const androidAutoRequestDpi = (
+  viewport: ViewportSize,
+  baseDpi: number = DEFAULT_PROJECTION_DPI,
+): number => {
+  if (!isCompactViewport(viewport) || baseDpi <= 0) return baseDpi;
+
+  const requestSize = androidAutoRequestSize(viewport);
+  const scale = Math.min(
+    viewport.width / requestSize.width,
+    viewport.height / requestSize.height,
+  );
+  if (!Number.isFinite(scale) || scale <= 0 || scale >= 1) return baseDpi;
+
+  const compensatedDpi = baseDpi / scale;
+  return STANDARD_ANDROID_AUTO_DENSITIES.reduce((nearest, candidate) =>
+    Math.abs(candidate - compensatedDpi) < Math.abs(nearest - compensatedDpi)
+      ? candidate
+      : nearest,
+  );
+};

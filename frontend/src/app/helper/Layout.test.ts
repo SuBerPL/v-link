@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  androidAutoRequestDpi,
   androidAutoRequestSize,
   carplayRequestSize,
   fitInside,
@@ -80,6 +81,16 @@ describe('layout helpers', () => {
       .toEqual({ width: 1280, height: 720 });
     expect(androidAutoRequestSize({ width: 1280, height: 720 }))
       .toEqual({ width: 1280, height: 720 });
+  });
+
+  it('compensates Android Auto density for compact downscaling', () => {
+    expect(androidAutoRequestDpi({ width: 400, height: 234 })).toBe(320);
+    expect(androidAutoRequestDpi({ width: 480, height: 248 })).toBe(320);
+  });
+
+  it('preserves the configured Android Auto density on larger screens', () => {
+    expect(androidAutoRequestDpi({ width: 800, height: 440 })).toBe(160);
+    expect(androidAutoRequestDpi({ width: 1280, height: 720 }, 240)).toBe(240);
   });
 
   it('uses a known-good 720p CarPlay stream on compact screens', () => {

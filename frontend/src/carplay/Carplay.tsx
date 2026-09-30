@@ -18,6 +18,7 @@ import { CARPLAY_MEDIA_COMMAND_EVENT, type MediaCommand } from './mediaCommands'
 import { APP } from '@/store/Store';
 import hexToRGBA from '@/app/helper/HexToRGBA'
 import {
+  androidAutoRequestDpi,
   androidAutoRequestSize,
   carplayRequestSize,
   isCompactViewport,
@@ -135,20 +136,26 @@ function Carplay({ command, commandCounter, resetDevice = false, onRecovery, onH
 
   const projectionConfig = useMemo(() => {
     const dongleConfigFlat = dongleConfig ? flattenConfig(dongleConfig) : {};
+    const viewport = { width, height };
     const carPlaySize = carplayRequestSize({ width, height });
-    const androidAutoSize = androidAutoRequestSize({ width, height });
+    const androidAutoSize = androidAutoRequestSize(viewport);
+    const configuredDpi = typeof dongleConfigFlat.dpi === 'number'
+      ? dongleConfigFlat.dpi
+      : undefined;
+    const androidAutoDpi = androidAutoRequestDpi(viewport, configuredDpi);
     const carplayConfig = {
       ...dongleConfigFlat,
       androidWorkMode: dongleConfigFlat.androidWorkMode ?? true, // TODO check if this is needed, node-carplay should default to true
       width: carPlaySize.width,
       height: carPlaySize.height,
+      dpi: androidAutoDpi,
     };
 
-    const sig = JSON.stringify({ carplayConfig, androidAutoSize });
+    const sig = JSON.stringify({ carplayConfig, androidAutoSize, androidAutoDpi });
     if (sig !== lastDongleConfigSigRef.current) {
       socket.log.emit(
         'info',
-        `(CarPlay) Config: ${JSON.stringify(carplayConfig)}; Android Auto=${androidAutoSize.width}x${androidAutoSize.height}`,
+        `(CarPlay) Config: ${JSON.stringify(carplayConfig)}; Android Auto=${androidAutoSize.width}x${androidAutoSize.height}@${androidAutoDpi}dpi`,
       );
       lastDongleConfigSigRef.current = sig;
     }

@@ -108,7 +108,7 @@ it('starts compact projections with separate CarPlay and Android Auto sizes', as
   expect(usbWorker.postMessage).toHaveBeenCalledWith(expect.objectContaining({
     type: 'start',
     payload: expect.objectContaining({
-      config: expect.objectContaining({ width: 1280, height: 720 }),
+      config: expect.objectContaining({ width: 1280, height: 720, dpi: 320 }),
       androidAutoSize: { width: 800, height: 480 },
     }),
   }))
