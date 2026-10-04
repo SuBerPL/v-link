@@ -115,7 +115,7 @@
             "parameter": [
                 "0x0C"
             ],
-            "app_id": "got1",
+            "app_id": "got",
             "req_id": "0x000FFFFE",
             "rep_id": "0x01200005",
             "action": "0xA5",
