@@ -27,6 +27,26 @@ confirm_action() {
     done
 }
 
+prompt_bitrate() {
+    local variable_name="$1"
+    local interface_name="$2"
+    local default_bitrate="$3"
+    local bitrate
+
+    while true; do
+        read -r -p "Enter BitRate for $interface_name [default: $default_bitrate]: " bitrate
+        bitrate=${bitrate:-$default_bitrate}
+
+        if [[ "$bitrate" =~ ^[0-9]{1,7}$ ]] &&
+           (( 10#$bitrate >= 1 && 10#$bitrate <= 1000000 )); then
+            printf -v "$variable_name" '%s' "$bitrate"
+            return 0
+        fi
+
+        echo "Invalid BitRate. Enter a whole number from 1 to 1000000 (bit/s)."
+    done
+}
+
 fix_ownership() {
     sudo chown -R "$CURRENT_USER:$CURRENT_USER" "$1"
 }
@@ -260,20 +280,20 @@ EOF'
     fi
 
 
-  	# Setting up systemd-networkd
+    # Setting up systemd-networkd
     echo "Creating systemd-networkd configuration files for can1 and can2..."
 
     # Info about config verify
     echo ""
     echo "------------------------------------------------------------------"
-    echo "NOTE: Make sure to verify that the CAN BitRates configured here"
-    echo "match your profile settings in ~/.config/v-link/can.json!"
+    echo "NOTE: After the first V-Link launch and profile selection, verify"
+    echo "that these CAN bitrates match /home/$CURRENT_USER/.config/v-link/can.json."
+    echo "That file does not exist before the first launch."
     echo "------------------------------------------------------------------"
     echo ""
 
     # CAN1 configuration
-    read -p "Enter BitRate for can1 [default: 125000]: " CAN1_BITRATE
-    CAN1_BITRATE=${CAN1_BITRATE:-125000}
+    prompt_bitrate CAN1_BITRATE can1 125000
 
     if [[ ! -f /etc/systemd/network/can1.network ]] || confirm_action "can1.network exists. Overwrite it?"; then
         sudo tee /etc/systemd/network/can1.network > /dev/null <<EOF
@@ -292,8 +312,7 @@ EOF
     fi
 
     # CAN2 configuration
-    read -p "Enter BitRate for can2 [default: 500000]: " CAN2_BITRATE
-    CAN2_BITRATE=${CAN2_BITRATE:-500000}
+    prompt_bitrate CAN2_BITRATE can2 500000
 
     if [[ ! -f /etc/systemd/network/can2.network ]] || confirm_action "can2.network exists. Overwrite it?"; then
         sudo tee /etc/systemd/network/can2.network > /dev/null <<EOF
